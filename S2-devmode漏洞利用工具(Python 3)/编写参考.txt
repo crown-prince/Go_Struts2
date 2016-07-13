@@ -1,0 +1,8 @@
+http://zone.wooyun.org/content/28416 关于启明星辰(devMode Struts2)
+
+http://drops.wooyun.org/papers/902 struts2最近几个漏洞分析&稳定利用payload（S2 008)
+
+http://mp.weixin.qq.com/s?__biz=MzAwNTI1NDI3MQ==&mid=2649611817&idx=1&sn=22c8b5372f668fed73dd67fb23e015fc&
+scene=1&srcid=0712qdQDE416tCqxcEJSqXUt&from=singlemessage&isappinstalled=0#wechat_redirect
+启明星辰ADLab发现Struts2远程代码执行漏洞, 切勿使用devMode！ 
+
